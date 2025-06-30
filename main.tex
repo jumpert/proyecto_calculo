@@ -419,43 +419,308 @@ También se observa que en el desarrollo de Taylor de orden 3, cambia de signo p
 
 
 
-\subsection*{Parte 2 – Caída con rozamiento}
-\begin{enumerate}
-\item Desarrollo de Taylor O(2) de $y(t)$; se discute la aceleración
-inicial y el caso $\gamma\to0$.
-\item Simulación numérica y superposición de curvas para los tres $\gamma$
-(hormiga, persona, auto) y las seis combinaciones .
-\item Obtención analítica de la velocidad terminal
-$v_T=-\dfrac{g}{\gamma}$ y verificación en las simulaciones.
-\item Criterio basado en $\gamma t\ll1$ para descartar la resistencia.
-\end{enumerate}
-Los resultados se comentan sobre cada gráfico generado por
-\codeword{caida_con_rozamiento.py}.
+\subsection{Caída con rozamiento lineal}
+Ya se ha justificado el uso de un modelo con gravedad constante cerca de la superficie terrestre. Ahora se explorará el efecto del rozamiento del aire en el movimiento de un cuerpo en caída libre. 
 
-% --------------------------------------------------------------------
-\section{Conclusiones}\label{sec:conclusiones}
+Consideramos un cuerpo que cae verticalmente bajo la acción de la gravedad y una fuerza de rozamiento proporcional a su velocidad. Aplicando la segunda ley de Newton, la ecuación del movimiento es:
+
+\[
+m \frac{d^2y}{dt^2} = -b \frac{dy}{dt} - mg
+\]
+
+Definimos los parámetros:
+
+\[
+\gamma := \frac{b}{m}, \quad v_0 := \left.\frac{dy}{dt}\right|_{t=0}
+\]
+
+donde:
 \begin{itemize}
-\item Los polinomios de Taylor orden 1 y 2 son suficientes para aproximar
-la ley $,-GM/r^2$ a menos de 0.3 % en la baja atmósfera.
-\item En el modelo con rozamiento lineal, el término adicional
-$\tfrac12\gamma v_0 t^2$ delimita la validez de la aproximación.La condición $\gamma t<0.3$ (<10 % de corrección) resultó un umbral
-práctico en todas las simulaciones.
-\item El uso del Taylor permitió justificar algebraicamente cuándo las
-curvas con y sin aire se separan, antes de siquiera integrar
-numéricamente el sistema.
+\item \( \gamma \) representa la constante de rozamiento específica del cuerpo
+\item \( v_0 \) es la velocidad inicial
+\item \( y_0 \) es la posición inicial del cuerpo
+\end{itemize}
+La solución a esta ecuación diferencial, que representa la posición vertical del cuerpo en función del tiempo, se expresa como:
+
+\[
+y(t) = y_0 - \frac{g}{\gamma} t - \frac{1}{\gamma} \left( v_0 + \frac{g}{\gamma} \right) \left( e^{-\gamma t} - 1 \right)
+\]
+
+Este modelo supone que el movimiento es puramente vertical y no considera desplazamientos horizontales.
+
+A continuación, se consideran tres valores distintos de \( \gamma \) para representar distintos tipos de cuerpos:
+
+\begin{itemize}
+    \item \( \gamma_h = 6.54\, \text{s}^{-1} \) (aproximación para una \textbf{hormiga})
+    \item \( \gamma_p = 2.35 \times 10^{-1}\, \text{s}^{-1} \) (aproximación para una \textbf{persona})
+    \item \( \gamma_a = 1.05 \times 10^{-2}\, \text{s}^{-1} \) (aproximación para un \textbf{auto})
 \end{itemize}
 
+\subsubsection{Comportamiento del desarrollo de Taylor de orden 2 alrededor de \( t = 0 \) y análisis para \( \gamma \) pequeño}
+
+Se parte de la expresión para la posición con rozamiento:
+
+\[
+y(t) = y_0 - \frac{g}{\gamma} t - \frac{1}{\gamma} \left( v_0 + \frac{g}{\gamma} \right)(e^{-\gamma t} - 1)
+\]
+
+Calculamos las derivadas en \( t = 0 \):
+
+\[
+y'(t) = -\frac{g}{\gamma} + \left( v_0 + \frac{g}{\gamma} \right) e^{-\gamma t} \quad \Rightarrow \quad y'(0) = v_0
+\]
+\[
+y''(t) = \gamma \left( v_0 + \frac{g}{\gamma} \right) e^{-\gamma t} \quad \Rightarrow \quad y''(0) = - (g + \gamma v_0)
+\]
+
+El polinomio de Taylor de orden 2 alrededor de \( t = 0 \) es:
+
+\[
+P_2(t) = y(0) + y'(0)t + \frac{1}{2} y''(0)t^2
+\]
+
+\noindent Comparando el modelo con aire y sin aire para \( v_0 \neq 0 \):
+
+\[
+\begin{array}{|c|c|}
+\hline
+\textbf{Sin aire} & \textbf{Con aire (Taylor O(2))} \\
+\hline
+v_0 \cdot t & v_0 \cdot t \\
+-\frac{1}{2} g t^2 & -\frac{1}{2} (g + \gamma v_0) t^2 \\
+\hline
+\end{array}
+\]
+
+\paragraph{Análisis para \( \gamma \) pequeño:}
+
+\begin{itemize}
+    \item Si \( v_0 = 0 \Rightarrow y''(0) = -g \). El término de rozamiento no tiene efecto: se recupera el caso de caída libre.
+    \item Si \( v_0 < 0 \) (movimiento descendente inicial) y \( \gamma > 0 \): 
+    \[
+    \gamma v_0 < 0 \Rightarrow |y''(0)| < g
+    \]
+    La aceleración disminuye: el aire frena la caída.
+    \item Si \( v_0 > 0 \) (movimiento ascendente inicial): 
+    \[
+    y''(0) = -(g + \gamma v_0) < -g
+    \]
+    La aceleración aumenta en módulo, frenando más rápidamente la subida.
+\end{itemize}
+
+A continuación se presenta el gráfico que describe el comportamiento de las curvas para los distintos valores de \( \gamma \):
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/comparacion_curva_3modelos.png}
+    \caption{Comparación de las curvas para los valores de \( \gamma \)}
+\end{figure}
+
+\paragraph{Conclusión:} 
+Cuando \( \gamma \to 0 \), el término \( \gamma v_0 t^2 \) es de orden inferior y el movimiento se aproxima al caso sin aire. Por lo tanto, para valores muy pequeños de \( \gamma \), el polinomio de Taylor tiende al comportamiento de caída libre sin rozamiento.
+
+\subsubsection{Evaluación de los tres modelos: con rozamiento, sin rozamiento y Taylor de orden 2}
+
+Las funciones evaluadas son:
+\begin{itemize}
+    \item Con rozamiento: $y_{\text{cr}}(t) = y_0 - \frac{g}{\gamma}t - \frac{1}{\gamma}(v_0 + \frac{g}{\gamma})(e^{-\gamma t} - 1)$
+    \item Sin rozamiento: $y_{\text{sr}}(t) = y_0 + v_0t - \frac{1}{2}gt^2$
+    \item Taylor orden 2: $P_2(t) = y_0 + v_0t - \frac{1}{2}(g + \gamma v_0)t^2$
+\end{itemize}
+
+A continuación se presentan los resultados numéricos para $t = 1$ s:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c||c|c|c|}
+\hline
+$y_0$ (m) & $v_0$ (m/s) & Sin aire ($y_{\text{sr}}$) & Con aire ($y_{\text{cr}}$) & Taylor 2° orden ($P_2$) \\
+\hline
+1         & 0           & -9.81                      & -9.82                      & -9.81 \\
+1000      & 0           & -9.78                      & -9.78                      & -9.78 \\
+1         & -100        & -9.81                    & 13.71                    & 13.69 \\
+1000      & -100        & -9.78                    & 13.76                    & 13.64 \\
+0         & 0.1         & -9.81                      & -9.84                      & -9.83 \\
+0         & 100         & -9.81                      & -33.35                     & -33.31 \\
+\hline
+\end{tabular}
+\caption{Comparación de modelos de caída con y sin rozamiento y su aproximación de Taylor}
+\end{table}
+
+\paragraph{¿Cuándo difieren los modelos?}
+\begin{itemize}
+    \item \textbf{Condiciones suaves} ($v_0 \approx 0$, alturas bajas): las tres curvas casi se solapan durante varios segundos.
+    \item \textbf{Velocidades iniciales grandes} ($|v_0| \gg 0$): el término $\gamma v_0$ cambia la aceleración inicial; la curva exacta se separa rápido y la de Taylor sólo es válida cerca de $t=0$.
+    \item \textbf{Alturas muy grandes} ($y_0=1000$ m): incluso con $v_0=0$ el modelo exacto termina acercándose a la velocidad terminal; la caída libre sigue acelerando indefinidamente, por lo que la diferencia crece con el tiempo.
+    \item \textbf{Si $\gamma \to 0$} (no mostrado): el efecto de rozamiento se atenúa y los tres modelos convergen a la parábola de caída libre.
+\end{itemize}
+
+En el siguiente gráfico se muestra la comparación de las curvas para $y_0 = 1$ m y $v_0 = 0$ m/s, con distintos valores de $\gamma$:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/comparacion_de_los_modelos_p2.png}
+    \caption{Comparación de curvas con distintos valores de $\gamma$}
+\end{figure}
+
+\subsubsection{Derivar $y(t)$ y hallar la Velocidad Terminal $v_T$}
+
+Recordando la expresión para el movimiento con rozamiento:
+
+\[
+y(t) = y_0 - \frac{g}{\gamma} t - \frac{1}{\gamma} \left( v_0 + \frac{g}{\gamma} \right)\left( e^{-\gamma t} - 1 \right)
+\]
+
+Derivando respecto al tiempo:
+
+\[
+y'(t) = -\frac{g}{\gamma} + \left( v_0 + \frac{g}{\gamma} \right) e^{-\gamma t}
+\]
+
+Tomando el límite cuando $t \to \infty$ se obtiene la velocidad terminal:
+
+\[
+v_T = \lim_{t \to \infty} y'(t) = -\frac{g}{\gamma}
+\]
+
+Esto indica que la velocidad terminal es constante, negativa (hacia abajo), y de módulo:
+
+\[
+|v_T| = \frac{g}{\gamma}
+\]
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|l|}
+\hline
+$\gamma$ & $v_T$ (m/s) & Comentario \\
+\hline
+$\gamma_h = 6.54$ s$^{-1}$ & $-1.50$ & Una hormiga ``planea'' lentamente \\
+$\gamma_p = 0.235$ s$^{-1}$ & $-41.7$ & Una persona en caída libre $\approx$ 150 km/h \\
+$\gamma_a = 1.05 \cdot 10^{-2}$ s$^{-1}$ & $-933$ & Imposible de alcanzar en la práctica \\
+\hline
+\end{tabular}
+\caption{Velocidades terminales para distintos valores de $\gamma$}
+\end{table}
+
+\paragraph{Observaciones:}
+
+\begin{itemize}
+    \item Si $v_0 \neq v_T$: la velocidad $y'(t)$ converge exponencialmente a $v_T$ con escala temporal $t_c = \frac{1}{\gamma}$.
+    Por ejemplo, para una persona ($\gamma = 0.235$), la velocidad alcanza el 95\% de $v_T$ aproximadamente a los 13 segundos.
+
+    \item Si $v_0 = v_T$: el término $v_0 + \frac{g}{\gamma} = 0$ y desaparece la parte exponencial. En ese caso, $y'(t) = v_T$ para todo $t$, es decir, el cuerpo cae a velocidad constante, describiendo una línea recta.
+
+    \item \textbf{Modelos sin rozamiento}: tanto la caída libre como la aproximación de Taylor ($y_{\text{sr}}$ y $P_2$) no poseen velocidad terminal. En ellos, la velocidad crece linealmente con el tiempo: $y'(t) = v_0 - gt$, y diverge a medida que $t \to \infty$.
+\end{itemize}
+
+Para ilustrar el comportamiento de las velocidades terminales, se presenta el siguiente gráfico:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/comportamiento_VT.png}
+    \caption{Velocidades terminales para distintos valores de $\gamma$}
+\end{figure}
+
+\paragraph{Comparación de tiempos característicos:}
+
+\begin{itemize}
+    \item $\gamma_h$ $\rightarrow t_c = 0.15$ s $\Rightarrow$ alcanza 99\% de $v_T$ en 0.7 s.
+    \item $\gamma_p$ $\rightarrow t_c = 4.3$ s $\Rightarrow$ se necesitan $\sim$13 s y $\sim$1000 m para caer a velocidad terminal.
+    \item $\gamma_a$ $\rightarrow t_c = 95$ s $\Rightarrow$ aún después de 15 s la velocidad sigue lejos de $v_T$.
+\end{itemize}
+
+\subsubsection{¿Cuándo se puede desestimar la resistencia del aire?}
+
+Para el modelo con aire:
+
+\[
+y_{\text{roz}}(t) = y_0 + v_0 t - \frac{1}{2}(g + \gamma v_0)t^2 + \mathcal{R}(t^3)
+\]
+
+Para el modelo sin aire (caída libre):
+
+\[
+y_{\text{libre}}(t) = y_0 + v_0 t - \frac{1}{2}gt^2 + \mathcal{R}(t^3)
+\]
+
+Comparando ambos modelos, la diferencia aparece en el término:
+
+\[
+\Delta y(t) = \frac{1}{2} \gamma v_0 t^2
+\]
+
+Este término cuadrático indica el efecto inicial del rozamiento. Veamos distintos casos:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Condición inicial} & \textbf{Rozamiento} \\
+\hline
+$v_0 = 0$ & La corrección $\frac{1}{2} \gamma v_0 t^2$ desaparece. El efecto del rozamiento es despreciable para $t$ pequeños. Se nota sólo si $\gamma t \gtrsim 1$. \\
+\hline
+$v_0 = v_T$ & Como $v_0 + \frac{g}{\gamma} = 0$, los modelos con aire y sin aire coinciden hasta orden $t^2$. La resistencia se cancela exactamente. \\
+\hline
+Lanzamiento fuerte ($v_0 = 100$ m/s) & Para una persona ($\gamma = 0.235$), el término $\frac{1}{2} \gamma v_0 t^2$ es relevante desde $t \approx 4$ s. 
+A medida que $t$ crece, el error relativo 
+\[
+\epsilon(t) = \frac{|\gamma v_0|}{|v_0 - \frac{1}{2}gt|} \cdot t
+\]
+aumenta, haciendo que el modelo sin rozamiento se vuelva inadecuado. \\
+\hline
+\end{tabular}
+\caption{Cuándo considerar o ignorar el rozamiento del aire}
+\end{table}
+
+\subsubsection*{Relación con la masa}
+
+Si $b$ es fijo, se tiene que:
+
+\[
+\gamma = \frac{b}{m}, \qquad t_c = \frac{1}{\gamma} = \frac{m}{b}, \qquad \epsilon \propto \gamma \propto \frac{1}{m}
+\]
+
+Esto implica que cuanto mayor es la masa del cuerpo, menor es el valor de $\gamma$. Por lo tanto, el término de corrección en el desarrollo de Taylor:
+
+\[
+\frac{1}{2} \gamma v_0 t^2
+\]
+
+se vuelve insignificante frente al término gravitacional principal $\frac{1}{2}gt^2$. En consecuencia, el movimiento con rozamiento tiende al de caída libre para objetos con gran masa.
+
+\medskip
+
+\textbf{Conclusión:} Un objeto más pesado alcanza el suelo más rápido en presencia de aire debido a que la resistencia tiene menor efecto sobre él.
+
+\medskip
+
+Usando el polinomio de Taylor se observa que se puede despreciar la resistencia del aire cuando:
+
+\[
+y(t_{\text{mov}}) \leq 0.3
+\]
+
+ya que en este caso el término $\frac{1}{2}\gamma v_0 t^2$ representa aproximadamente un 10\% del valor del término gravitacional $\frac{1}{2}gt^2$, y su impacto es menor.
+
+
+
+
+
+% --------------------------------------------------------------------
+\section{Conclusiones}
+
+Los polinomios de Taylor nos permiten aproximar funciones complejas usando expresiones más simples, como sumas de potencias. Cuanto mayor es el orden del polinomio, mejor se ajusta al comportamiento real de la función en torno a un punto elegido.
+
+A lo largo del trabajo, vimos que esta herramienta matemática resulta muy útil para entender fenómenos naturales como la gravedad o la caída de objetos. Por ejemplo, cuando analizamos cómo cambia la aceleración gravitatoria al alejarnos de la superficie terrestre, el polinomio de Taylor de orden 2 fue suficiente para obtener resultados casi idénticos a los reales, si el cambio de altura no era muy grande.
+
+También estudiamos la caída de cuerpos con y sin rozamiento del aire. Allí, los desarrollos de Taylor nos ayudaron a comparar ambos modelos y entender cuándo es razonable ignorar la resistencia del aire. Descubrimos que para objetos muy pesados o para tiempos de caída cortos, el efecto del aire es tan pequeño que puede dejarse de lado sin afectar mucho la precisión.
+
+En resumen, el polinomio de Taylor es una herramienta muy poderosa para simplificar cálculos y hacer predicciones, siempre que sepamos hasta qué punto la aproximación sigue siendo válida. Su utilidad se nota especialmente cuando trabajamos con funciones que, de otra manera, serían muy difíciles de manejar.
+
 % --------------------------------------------------------------------
 \section{Referencias}
 \begin{enumerate}
-\item Suárez, J. E., \& González, M. A. (2018). Polinomios de Taylor: teoría y aplicaciones. \textit{Revista Iberoamericana de Matemática, 35}(2), 123–145.
-\item Serway, R.
-\emph{Física para ciencias e ingeniería}. Cengage Learning.
-\item Notas de curso de Cálculo Aplicado – UCU (2024).
-\end{enumerate}
-\section{Referencias}
-Suárez, J. E., \& González, M. A. (2018). Polinomios de Taylor: teoría y aplicaciones. \textit{Revista Iberoamericana de Matemática, 35}(2), 123–145.
+\item Stewart, J. (2016). \textit{Cálculo de una variable: Trascendentes tempranas} (8ª ed., pp. 774-778). Cengage Learning. $http://www.unet.edu.ve/gilbpar/images/LIBROS/Calculo\ de\ una\ variable\\\ Stewart_9naEd.pdf$
+\item LibreTexts. (2020). \textit{Taylor Polynomials} (Sección 8.7). En \textit{Calculus 3e (Apex)}. CC‑BY‑NC 3.0. Recuperado de: $https://math.libretexts.org/Bookshelves/Calculus/Calculus_3e_(Apex)/08\%3\\A_Sequences_and_Series/8.07\%3A_Taylor_Polynomials$
 
-Stewart, J. (2015). \textit{Cálculo de una variable} (7ª ed.). Cengage Learning.
+\end{enumerate}
 
 \end{document}
