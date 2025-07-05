@@ -64,7 +64,7 @@
         {\Large Profesores: Maglis Mujica y Martín Perciante \par}
         \vfill
         {\Large Autores: \par}
-        {\Large Luis Balduini (4.001.184-9)\\Leandro Casaretto (x.xxx.xxx-x)\\Juan Manuel Pérez (4.673.899-0) \par}
+        {\Large Luis Balduini (4.001.184-9)\\Leandro Casaretto (5.400.457-7)\\Juan Manuel Pérez (4.673.899-0) \par}
         \vfill
         {\Large \today \par}
     \end{titlepage}
@@ -705,21 +705,24 @@ ya que en este caso el término $\frac{1}{2}\gamma v_0 t^2$ representa aproximad
 
 
 % --------------------------------------------------------------------
-\section{Conclusiones}
+\section{Conclusiones Finales}
 
-Los polinomios de Taylor nos permiten aproximar funciones complejas usando expresiones más simples, como sumas de potencias. Cuanto mayor es el orden del polinomio, mejor se ajusta al comportamiento real de la función en torno a un punto elegido.
+A lo largo de este proyecto, exploramos el uso de los \textit{polinomios de Taylor} como una herramienta poderosa para simplificar y comprender fenómenos físicos complejos. Aplicamos esta aproximación matemática a dos situaciones distintas pero muy representativas: la \textbf{variación de la gravedad con la altura} y el \textbf{movimiento de caída con rozamiento del aire}.
 
-A lo largo del trabajo, vimos que esta herramienta matemática resulta muy útil para entender fenómenos naturales como la gravedad o la caída de objetos. Por ejemplo, cuando analizamos cómo cambia la aceleración gravitatoria al alejarnos de la superficie terrestre, el polinomio de Taylor de orden 2 fue suficiente para obtener resultados casi idénticos a los reales, si el cambio de altura no era muy grande.
+En el primer caso, demostramos que, cerca de la superficie terrestre, el valor de la aceleración gravitatoria puede considerarse prácticamente constante. Usando desarrollos de Taylor de orden 1 y 2, mostramos que incluso con diferencias de altura de varios kilómetros (como en el caso del Monte Everest), el error es mínimo. Esto justifica por qué en la mayoría de los problemas cotidianos se utiliza un valor constante para la gravedad.
 
-También estudiamos la caída de cuerpos con y sin rozamiento del aire. Allí, los desarrollos de Taylor nos ayudaron a comparar ambos modelos y entender cuándo es razonable ignorar la resistencia del aire. Descubrimos que para objetos muy pesados o para tiempos de caída cortos, el efecto del aire es tan pequeño que puede dejarse de lado sin afectar mucho la precisión.
+En el segundo caso, analizamos cómo influye el \textit{rozamiento del aire} en un objeto en caída. Estudiamos diferentes escenarios (velocidades iniciales, masas y constantes de rozamiento) y comparamos los modelos exactos con el modelo sin aire y con su correspondiente polinomio de Taylor de orden 2. Pudimos ver que el \textbf{modelo de Taylor es preciso para tiempos pequeños} o cuando el rozamiento es débil (por ejemplo, en objetos pesados). Sin embargo, cuando se incrementa la velocidad inicial o el tiempo de caída, la diferencia entre modelos se vuelve más notoria.
 
-En resumen, el polinomio de Taylor es una herramienta muy poderosa para simplificar cálculos y hacer predicciones, siempre que sepamos hasta qué punto la aproximación sigue siendo válida. Su utilidad se nota especialmente cuando trabajamos con funciones que, de otra manera, serían muy difíciles de manejar.
+También se mostró que el desarrollo de Taylor no solo permite simplificar los cálculos, sino que \textbf{ayuda a entender físicamente} en qué condiciones es razonable despreciar ciertos efectos (como el aire) y cuándo no. Por ejemplo, si la corrección debida al rozamiento es menor al 10\% del valor gravitacional, se puede ignorar sin afectar la precisión del resultado.
+
+En definitiva, este trabajo nos permitió ver cómo una técnica matemática aparentemente abstracta puede ser aplicada de forma concreta para tomar decisiones sobre la validez de modelos físicos, estimar errores y encontrar soluciones prácticas en contextos reales. Más allá del cálculo, se trató de \textit{entender mejor el mundo físico desde una mirada matemática fundamentada}.
 
 % --------------------------------------------------------------------
 \section{Referencias}
 \begin{enumerate}
 \item Stewart, J. (2016). \textit{Cálculo de una variable: Trascendentes tempranas} (8ª ed., pp. 774-778). Cengage Learning. $http://www.unet.edu.ve/gilbpar/images/LIBROS/Calculo\ de\ una\ variable\\\ Stewart_9naEd.pdf$
 \item LibreTexts. (2020). \textit{Taylor Polynomials} (Sección 8.7). En \textit{Calculus 3e (Apex)}. CC‑BY‑NC 3.0. Recuperado de: $https://math.libretexts.org/Bookshelves/Calculus/Calculus_3e_(Apex)/08\%3\\A_Sequences_and_Series/8.07\%3A_Taylor_Polynomials$
+\item S/n. (s.f.). \textit{Taylor} Polinomio de Taylor. Material de la Cátedra de Cálculo Aplicado.
 
 \end{enumerate}
 
